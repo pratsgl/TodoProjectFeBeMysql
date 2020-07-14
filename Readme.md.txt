@@ -5,238 +5,174 @@ https://github.com/shri-kanth/kuberenetes-demo-manifests
 
 https://hub.docker.com/r/kubernetesdemo/to-do-app-frontend/
 https://hub.docker.com/r/kubernetesdemo/to-do-app-backend/
+user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$ kubectl get secrets -n default
+NAME                  TYPE                                  DATA   AGE
+db-credentials        Opaque                                2      6h30m
+db-root-credentials   Opaque                                1      6h33m
+default-token-97qmt   kubernetes.io/service-account-token   3      7h42m
 
-[g702892@da3q-gen-imn-app100 TodoProject]$ kubectl get secrets --all-namespaces | grep db
-default           db-credentials                                   Opaque                                2      6m44s
-default           db-root-credentials                              Opaque                                1      7m38s
+user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$ kubectl get configmaps -n default
+NAME           DATA   AGE
+backend-conf   1      5h45m
+db-conf        2      6h42m
 
-[g702892@da3q-gen-imn-app100 TodoProject]$ kubectl get configmap --all-namespaces | grep db
-default       db-conf                              2      9m45s
+user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$ kubectl get pods
+NAME                                  READY   STATUS    RESTARTS   AGE
+mysql-656c77d597-82rsm                1/1     Running   0          4h50m
+to-do-app-backend-5b9496bf96-4bsqp    1/1     Running   1          4h50m
+to-do-app-backend-5b9496bf96-cbfcq    1/1     Running   1          5h58m
+to-do-app-frontend-76666776fc-bcr4d   1/1     Running   1          5h44m
+to-do-app-frontend-76666776fc-tzmsq   1/1     Running   0          4h50m
 
-[g702892@da3q-gen-imn-app100 ~]$ kubectl get pods --all-namespaces | grep mysql
-NAMESPACE     NAME                                             READY   STATUS    RESTARTS   AGE     IP               NODE                  NOMINATED NODE   READINESS GATES
-default       mysql-656c77d597-qfld4                           1/1     Running   0          12m
 
-[g702892@da3q-gen-imn-app100 ~]$ kubectl get pv,pvc --all-namespaces | grep mysql
-persistentvolume/pvc-001b9d0e-3817-4175-9940-6249571250b1   1Gi        RWO            Delete           Bound    default/mysql-pv-claim               nfs-client              13m
-default      persistentvolumeclaim/mysql-pv-claim            Bound    pvc-001b9d0e-3817-4175-9940-6249571250b1   1Gi        RWO            nfs-client     13m
+user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$ kubectl get pv,pvc,storageclass -n default
+NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                                STORAGECLASS   REASON   AGE
+persistentvolume/pvc-19c2b98e-7be7-4ad1-a9e7-03cb0b01fdc7   1Gi        RWO            Delete           Bound    default/mysql-pv-claim               nfs-client              6h3m
+persistentvolume/pvc-7030e9f2-6469-4687-ab3b-c5a240d6570d   8Gi        RWO            Delete           Bound    monitoring/prometheus-server         nfs-client              3h50m
+persistentvolume/pvc-9b75e9c3-c8db-41b4-9ffa-40dd390d2ccc   2Gi        RWO            Delete           Bound    monitoring/prometheus-alertmanager   nfs-client              3h50m
 
-[g702892@da3q-gen-imn-app100 TodoProject]$ kubectl get deployments --all-namespaces | egrep -i "to-do|mysql"
-default       mysql                           1/1     1            1           20m
-default       to-do-app-backend               2/2     2            2           73s
+NAME                                   STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+persistentvolumeclaim/mysql-pv-claim   Bound    pvc-19c2b98e-7be7-4ad1-a9e7-03cb0b01fdc7   1Gi        RWO            nfs-client     6h3m
 
-[g702892@da3q-gen-imn-app100 TodoProject]$ kubectl get svc  --all-namespaces | egrep -i "to-do|mysql"
-default       mysql                           ClusterIP      None             <none>        3306/TCP                 22m
-default       to-do-app-backend               LoadBalancer   10.100.179.111   <pending>     80:31352/TCP             2m48s
+NAME                                               PROVISIONER              RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
+storageclass.storage.k8s.io/nfs-client (default)   nfs-client-provisioner   Delete          Immediate           true                   6h10m
 
-[g702892@da3q-gen-imn-app100 TodoProject]$  kubectl get replicasets
-NAME                           DESIRED   CURRENT   READY   AGE
-mysql-656c77d597               1         1         1       4h53m
-to-do-app-backend-5b9496bf96   2         2         2       4h34m
 
-[g702892@da3q-gen-imn-app100 TodoProject]$ kubectl describe services to-do-app-backend
+
+user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$ kubectl get deployments -n default
+NAME                 READY   UP-TO-DATE   AVAILABLE   AGE
+mysql                1/1     1            1           6h4m
+to-do-app-backend    2/2     2            2           6h
+to-do-app-frontend   2/2     2            2           5h46m
+
+user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$ kubectl get deployments -n default
+NAME                 READY   UP-TO-DATE   AVAILABLE   AGE
+mysql                1/1     1            1           6h4m
+to-do-app-backend    2/2     2            2           6h
+to-do-app-frontend   2/2     2            2           5h46m
+
+
+user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$ kubectl get replicasets -n default
+NAME                            DESIRED   CURRENT   READY   AGE
+mysql-656c77d597                1         1         1       6h5m
+to-do-app-backend-5b9496bf96    2         2         2       6h1m
+to-do-app-frontend-76666776fc   2         2         2       5h48m
+
+user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$ kubectl describe services mysql
+Name:              mysql
+Namespace:         default
+Labels:            app=mysql
+                   tier=database
+Annotations:       Selector:  app=mysql,tier=database
+Type:              ClusterIP
+IP:                None
+Port:              <unset>  3306/TCP
+TargetPort:        3306/TCP
+Endpoints:         192.168.94.17:3306
+Session Affinity:  None
+Events:            <none>
+
+
+user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$ kubectl describe services to-do-app-backend
 Name:                     to-do-app-backend
 Namespace:                default
 Labels:                   <none>
 Annotations:              Selector:  app=to-do-app,tier=backend
-Type:                     LoadBalancer
-IP:                       10.100.179.111
+Type:                     NodePort
+IP:                       10.105.139.184
 Port:                     <unset>  80/TCP
 TargetPort:               8080/TCP
-NodePort:                 <unset>  31352/TCP
-Endpoints:                10.40.185.18:8080,10.42.150.82:8080
+NodePort:                 <unset>  31397/TCP
+Endpoints:                192.168.94.16:8080,192.168.94.20:8080
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   <none>
+user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$ kubectl describe services to-do-app-frontend
+Name:                     to-do-app-frontend
+Namespace:                default
+Labels:                   <none>
+Annotations:              Selector:  app=to-do-app,tier=frontend
+Type:                     NodePort
+IP:                       10.108.74.250
+Port:                     <unset>  80/TCP
+TargetPort:               8080/TCP
+NodePort:                 <unset>  32181/TCP
+Endpoints:                192.168.94.21:8080,192.168.94.24:8080
 Session Affinity:         None
 External Traffic Policy:  Cluster
 Events:                   <none>
 
 
 
-[g702892@da3q-gen-imn-app100 TodoProject]$ kubectl get replicasets
-NAME                            DESIRED   CURRENT   READY   AGE
-mysql-656c77d597                1         1         1       5h1m
-to-do-app-backend-5b9496bf96    2         2         2       4h42m
-to-do-app-frontend-76666776fc   2         2         0       44s
-
-
-[g702892@da3d-gen-imn-svr002 ~]$ kubectl get svc
+user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$ kubectl get svc
 NAME                 TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
-kubernetes           ClusterIP   10.96.0.1        <none>        443/TCP        11d
-mysql                ClusterIP   None             <none>        3306/TCP       5h17m
-to-do-app-backend    NodePort    10.100.179.111   <none>        80:31352/TCP   4h58m
-to-do-app-frontend   NodePort    10.101.186.233   <none>        80:31212/TCP   17m
+kubernetes           ClusterIP   10.96.0.1        <none>        443/TCP        7h49m
+mysql                ClusterIP   None             <none>        3306/TCP       6h7m
+to-do-app-backend    NodePort    10.105.139.184   <none>        80:31397/TCP   6h3m
+to-do-app-frontend   NodePort    10.108.74.250    <none>        80:32181/TCP   5h49m
 
 
-[g702892@da3d-gen-imn-svr002 ~]$ kubectl get pods --all-namespaces -o wide
-NAMESPACE     NAME                                             READY   STATUS    RESTARTS   AGE     IP               NODE                  NOMINATED NODE   READINESS GATES
-default       mysql-656c77d597-qfld4                           1/1     Running   0          5h18m   10.40.185.17     da3d-gen-imn-svr003   <none>           <none>
-default       to-do-app-backend-5b9496bf96-g52mm               1/1     Running   0          4h59m   10.42.150.82     da3d-gen-imn-svr004   <none>           <none>
-default       to-do-app-backend-5b9496bf96-lnldd               1/1     Running   0          4h59m   10.40.185.18     da3d-gen-imn-svr003   <none>           <none>
-default       to-do-app-frontend-76666776fc-bj4wt              1/1     Running   0          17m     10.42.150.83     da3d-gen-imn-svr004   <none>           <none>
-default       to-do-app-frontend-76666776fc-pc6lt              1/1     Running   0          17m     10.40.185.19     da3d-gen-imn-svr003   <none>           <none>
-jenkins       jenkins-6ff46686cd-6ds8p                         1/1     Running   0          6d2h    10.42.150.81     da3d-gen-imn-svr004   <none>           <none>
-kube-system   calico-kube-controllers-76d4774d89-rmvzj         1/1     Running   0          11d     10.41.47.193     da3d-gen-imn-svr002   <none>           <none>
-kube-system   calico-node-5dl48                                1/1     Running   0          10d     10.165.209.219   da3d-gen-imn-svr004   <none>           <none>
-kube-system   calico-node-bgj4j                                1/1     Running   0          11d     10.165.209.218   da3d-gen-imn-svr003   <none>           <none>
-kube-system   calico-node-cw54h                                1/1     Running   0          11d     10.165.209.220   da3d-gen-imn-svr002   <none>           <none>
-kube-system   coredns-66bff467f8-bg9kc                         1/1     Running   0          11d     10.41.47.195     da3d-gen-imn-svr002   <none>           <none>
-kube-system   coredns-66bff467f8-bsr5r                         1/1     Running   0          11d     10.41.47.194     da3d-gen-imn-svr002   <none>           <none>
-kube-system   etcd-da3d-gen-imn-svr002                         1/1     Running   0          11d     10.165.209.220   da3d-gen-imn-svr002   <none>           <none>
-kube-system   kube-apiserver-da3d-gen-imn-svr002               1/1     Running   0          11d     10.165.209.220   da3d-gen-imn-svr002   <none>           <none>
-kube-system   kube-controller-manager-da3d-gen-imn-svr002      1/1     Running   0          11d     10.165.209.220   da3d-gen-imn-svr002   <none>           <none>
-kube-system   kube-proxy-8p25x                                 1/1     Running   0          11d     10.165.209.218   da3d-gen-imn-svr003   <none>           <none>
-kube-system   kube-proxy-8x2r4                                 1/1     Running   0          10d     10.165.209.219   da3d-gen-imn-svr004   <none>           <none>
-kube-system   kube-proxy-vh6mb                                 1/1     Running   0          11d     10.165.209.220   da3d-gen-imn-svr002   <none>           <none>
-kube-system   kube-scheduler-da3d-gen-imn-svr002               1/1     Running   0          11d     10.165.209.220   da3d-gen-imn-svr002   <none>           <none>
-kube-system   metrics-server-7b5f965dd7-l5x6p                  1/1     Running   0          9d      10.165.209.218   da3d-gen-imn-svr003   <none>           <none>
-kube-system   nfs-client-provisioner-56b4cc9d-8gt7b            1/1     Running   0          9d      10.42.150.71     da3d-gen-imn-svr004   <none>           <none>
-monitoring    prometheus-alertmanager-59b97b8b6f-tmrls         2/2     Running   0          9d      10.42.150.73     da3d-gen-imn-svr004   <none>           <none>
-monitoring    prometheus-kube-state-metrics-55c864f698-lmwgj   1/1     Running   0          9d      10.40.185.11     da3d-gen-imn-svr003   <none>           <none>
-monitoring    prometheus-node-exporter-n5llg                   1/1     Running   0          9d      10.165.209.220   da3d-gen-imn-svr002   <none>           <none>
-monitoring    prometheus-node-exporter-nvjlp                   1/1     Running   0          9d      10.165.209.218   da3d-gen-imn-svr003   <none>           <none>
-monitoring    prometheus-node-exporter-s298r                   1/1     Running   0          9d      10.165.209.219   da3d-gen-imn-svr004   <none>           <none>
-monitoring    prometheus-pushgateway-98d8dc9b-pcdfq            1/1     Running   0          9d      10.42.150.72     da3d-gen-imn-svr004   <none>           <none>
-monitoring    prometheus-server-79b77d8899-bgjpc               2/2     Running   0          9d      10.40.185.12     da3d-gen-imn-svr003   <none>           <none>
-
-[g702892@da3d-gen-imn-svr002 ~]$  kubectl port-forward --address localhost,10.165.209.220  -n default pod/to-do-app-frontend-76666776fc-bj4wt 8080:8080
-Forwarding from 10.165.209.220:8080 -> 8080
-Forwarding from 127.0.0.1:8080 -> 8080
-Forwarding from [::1]:8080 -> 8080
-Handling connection for 8080
-Handling connection for 8080
-Handling connection for 8080
-Handling connection for 8080
-Handling connection for 8080
-Handling connection for 8080
+user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$ kubectl get pods -o wide
+NAME                                  READY   STATUS    RESTARTS   AGE     IP              NODE                 NOMINATED NODE   READINESS GATES
+mysql-656c77d597-82rsm                1/1     Running   0          4h55m   192.168.94.17   kworker1.mylab.com   <none>           <none>
+to-do-app-backend-5b9496bf96-4bsqp    1/1     Running   1          4h55m   192.168.94.16   kworker1.mylab.com   <none>           <none>
+to-do-app-backend-5b9496bf96-cbfcq    1/1     Running   1          6h4m    192.168.94.20   kworker1.mylab.com   <none>           <none>
+to-do-app-frontend-76666776fc-bcr4d   1/1     Running   1          5h50m   192.168.94.24   kworker1.mylab.com   <none>           <none>
+to-do-app-frontend-76666776fc-tzmsq   1/1     Running   0          4h55m   192.168.94.21   kworker1.mylab.com   <none>           <none>
 
 
 
-
-
-[g702892@da3q-gen-imn-app100 TodoProject]$ kubectl exec -it -n default mysql-656c77d597-qfld4 bash
-
-root@mysql-656c77d597-qfld4:/# mysql -u root -p
-Enter password:magic
-Welcome to the MySQL monitor.  Commands end with ; or \g.
-Your MySQL connection id is 289
-Server version: 5.7.30 MySQL Community Server (GPL)
-
-Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
-
-Oracle is a registered trademark of Oracle Corporation and/or its
-affiliates. Other names may be trademarks of their respective
-owners.
-
-Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
-
-mysql> show databases;
-+--------------------+
-| Database           |
-+--------------------+
-| information_schema |
-| mysql              |
-| performance_schema |
-| sys                |
-| to-do-app-db       |
-+--------------------+
-5 rows in set (0.00 sec)
-
-mysql> use to-do-app-db;
-Reading table information for completion of table and column names
-You can turn off this feature to get a quicker startup with -A
-
-Database changed
-mysql> show tables;
-+------------------------+
-| Tables_in_to-do-app-db |
-+------------------------+
-| ITEM                   |
-| LIST_ENTITY            |
-| schema_version         |
-+------------------------+
-3 rows in set (0.00 sec)
-
-mysql> select * from ITEM;
-Empty set (0.00 sec)
-
-mysql>
-mysql> exit
-Bye
-root@mysql-656c77d597-qfld4:/# exit
-exit
-
-
-
-[g702892@da3q-gen-imn-app100 ~]$ kubectl get all
+user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$ kubectl get all
 NAME                                      READY   STATUS    RESTARTS   AGE
-pod/mysql-656c77d597-qfld4                1/1     Running   0          20h
-pod/to-do-app-backend-5b9496bf96-g52mm    1/1     Running   0          19h
-pod/to-do-app-backend-5b9496bf96-lnldd    1/1     Running   0          19h
-pod/to-do-app-frontend-76666776fc-d6bwh   1/1     Running   0          13h
-pod/to-do-app-frontend-76666776fc-l9x24   1/1     Running   0          13h
+pod/mysql-656c77d597-82rsm                1/1     Running   0          4h56m
+pod/to-do-app-backend-5b9496bf96-4bsqp    1/1     Running   1          4h56m
+pod/to-do-app-backend-5b9496bf96-cbfcq    1/1     Running   1          6h4m
+pod/to-do-app-frontend-76666776fc-bcr4d   1/1     Running   1          5h51m
+pod/to-do-app-frontend-76666776fc-tzmsq   1/1     Running   0          4h56m
 
 NAME                         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
-service/kubernetes           ClusterIP   10.96.0.1        <none>        443/TCP        11d
-service/mysql                ClusterIP   None             <none>        3306/TCP       20h
-service/to-do-app-backend    NodePort    10.100.179.111   <none>        80:31352/TCP   19h
-service/to-do-app-frontend   NodePort    10.101.186.233   <none>        80:31212/TCP   15h
+service/kubernetes           ClusterIP   10.96.0.1        <none>        443/TCP        7h50m
+service/mysql                ClusterIP   None             <none>        3306/TCP       6h9m
+service/to-do-app-backend    NodePort    10.105.139.184   <none>        80:31397/TCP   6h4m
+service/to-do-app-frontend   NodePort    10.108.74.250    <none>        80:32181/TCP   5h51m
 
 NAME                                 READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/mysql                1/1     1            1           20h
-deployment.apps/to-do-app-backend    2/2     2            2           19h
-deployment.apps/to-do-app-frontend   2/2     2            2           13h
+deployment.apps/mysql                1/1     1            1           6h9m
+deployment.apps/to-do-app-backend    2/2     2            2           6h4m
+deployment.apps/to-do-app-frontend   2/2     2            2           5h51m
 
 NAME                                            DESIRED   CURRENT   READY   AGE
-replicaset.apps/mysql-656c77d597                1         1         1       20h
-replicaset.apps/to-do-app-backend-5b9496bf96    2         2         2       19h
-replicaset.apps/to-do-app-frontend-76666776fc   2         2         2       13h
-[g702892@da3q-gen-imn-app100 ~]$
-[g702892@da3q-gen-imn-app100 ~]$
+replicaset.apps/mysql-656c77d597                1         1         1       6h9m
+replicaset.apps/to-do-app-backend-5b9496bf96    2         2         2       6h4m
+replicaset.apps/to-do-app-frontend-76666776fc   2         2         2       5h51m
+user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$ 
 
 
 
-[g702892@da3d-gen-imn-svr002 ~]$ kubectl get svc -n default -o wide
-NAME                 TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE   SELECTOR
-kubernetes           ClusterIP   10.96.0.1        <none>        443/TCP        12d   <none>
-mysql                ClusterIP   None             <none>        3306/TCP       31h   app=mysql,tier=database
-to-do-app-backend    NodePort    10.100.179.111   <none>        80:31352/TCP   31h   app=to-do-app,tier=backend
-to-do-app-frontend   NodePort    10.101.186.233   <none>        80:31212/TCP   26h   app=to-do-app,tier=frontend
+user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$ kubectl get nodes -o wide
+NAME                 STATUS   ROLES    AGE     VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE                KERNEL-VERSION           CONTAINER-RUNTIME
+kmaster.mylab.com    Ready    master   7h51m   v1.18.5   172.42.42.100   <none>        CentOS Linux 7 (Core)   3.10.0-1127.el7.x86_64   docker://19.3.12
+kworker1.mylab.com   Ready    <none>   7h49m   v1.18.5   172.42.42.101   <none>        CentOS Linux 7 (Core)   3.10.0-1127.el7.x86_64   docker://19.3.12
+kworker2.mylab.com   Ready    <none>   7h46m   v1.18.5   172.42.42.102   <none>        CentOS Linux 7 (Core)   3.10.0-1127.el7.x86_64   docker://19.3.12
 
-
-[g702892@da3q-gen-imn-app100 TodoProject]$ cat backend-configMap.yaml
-# ConfigMap to expose configuration related to backend application
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: backend-conf # name of configMap
-data:
-  server-uri: 10.165.209.220:31212 # enternal ip of backend application 'Service'
-
-
-
-[g702892@da3d-gen-imn-svr002 ~]$ kubectl get nodes -o wide
-NAME                  STATUS   ROLES    AGE   VERSION   INTERNAL-IP      EXTERNAL-IP   OS-IMAGE                                      KERNEL-VERSION               CONTAINER-RUNTIME
-da3d-gen-imn-svr002   Ready    master   13d   v1.18.2   10.165.209.220   <none>        Red Hat Enterprise Linux Server 7.6 (Maipo)   3.10.0-957.10.1.el7.x86_64   docker://19.3.8
-da3d-gen-imn-svr003   Ready    <none>   13d   v1.18.2   10.165.209.218   <none>        Red Hat Enterprise Linux Server 7.6 (Maipo)   3.10.0-957.10.1.el7.x86_64   docker://19.3.8
-da3d-gen-imn-svr004   Ready    <none>   11d   v1.18.2   10.165.209.219   <none>        Red Hat Enterprise Linux Server 7.6 (Maipo)   3.10.0-957.10.1.el7.x86_64   docker://19.3.8
-
-[g702892@da3d-gen-imn-svr002 ~]$ kubectl get svc -n default -o wide
-NAME                 TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE    SELECTOR
-kubernetes           ClusterIP   10.96.0.1        <none>        443/TCP        13d    <none>
-mysql                ClusterIP   None             <none>        3306/TCP       2d4h   app=mysql,tier=database
-to-do-app-backend    NodePort    10.100.179.111   <none>        80:31352/TCP   2d3h   app=to-do-app,tier=backend
-to-do-app-frontend   NodePort    10.101.186.233   <none>        80:31212/TCP   47h    app=to-do-app,tier=frontend
+user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$ kubectl get svc -o wide
+NAME                 TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE     SELECTOR
+kubernetes           ClusterIP   10.96.0.1        <none>        443/TCP        7h53m   <none>
+mysql                ClusterIP   None             <none>        3306/TCP       6h11m   app=mysql,tier=database
+to-do-app-backend    NodePort    10.105.139.184   <none>        80:31397/TCP   6h7m    app=to-do-app,tier=backend
+to-do-app-frontend   NodePort    10.108.74.250    <none>        80:32181/TCP   5h53m   app=to-do-app,tier=frontend
 
 
 You can access the application using :: MasternodeIP:to-do-app-frontend-port-number 
-Example : http://10.165.209.220:31212
+Example in this case  : http://172.42.42.100:32181 
 
 
 
-[g702892@da3q-gen-imn-app100 TodoProject]$ kubectl exec -it -n default mysql-656c77d597-qfld4 bash
+
+user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$  kubectl exec -it -n default mysql-656c77d597-82rsm bash
 kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl kubectl exec [POD] -- [COMMAND] instead.
-root@mysql-656c77d597-qfld4:/#
-root@mysql-656c77d597-qfld4:/#
-root@mysql-656c77d597-qfld4:/# mysql -u root -p
+
+root@mysql-656c77d597-82rsm:/# mysql -u root -p
 Enter password:
 Welcome to the MySQL monitor.  Commands end with ; or \g.
 Your MySQL connection id is 1278
@@ -303,6 +239,17 @@ mysql> select * from LIST_ENTITY;
 
 mysql>
 
+
+Note : We need to pass IP address of KMASTER node : With PORT number of to-do-app-backend service
+
+user@pradeep-lab-system:~/projects/terraform/ToDoApplication$ cat backend-configmap.yaml
+# ConfigMap to expose configuration related to backend application
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-conf # name of configMap
+data:
+  server-uri:  172.42.42.100:31397 # external ip of backend application 'Service'
 
 
 
