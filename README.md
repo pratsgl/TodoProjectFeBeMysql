@@ -1,8 +1,11 @@
 # TodoProjectFeBeMysql
 
 https://medium.com/better-programming/kubernetes-a-detailed-example-of-deployment-of-a-stateful-application-de3de33c8632
+
 https://github.com/shri-kanth/kuberenetes-demo-manifests
+
 https://hub.docker.com/r/kubernetesdemo/to-do-app-frontend/
+
 https://hub.docker.com/r/kubernetesdemo/to-do-app-backend/
 
 
