@@ -11,6 +11,7 @@ https://hub.docker.com/r/kubernetesdemo/to-do-app-backend/
 
 ![Alt](1*78_FSXLxWFY8eOQS-zJ8qA.png)
 
+```sh
 user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$ kubectl get secrets -n default
 NAME                  TYPE                                  DATA   AGE
 db-credentials        Opaque                                2      6h30m
@@ -48,3 +49,4 @@ storageclass.storage.k8s.io/nfs-client (default)   nfs-client-provisioner   Dele
 user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$ kubectl get deployments -n default
 NAME                 READY   UP-TO-DATE   AVAILABLE   AGE
 mysql                1/1     1            1           6h4m
+```
