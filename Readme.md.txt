@@ -248,15 +248,3 @@ metadata:
   name: backend-conf # name of configMap
 data:
   server-uri:  172.42.42.100:31397 # external ip of backend application 'Service'
-
-
-
-
-
-
-
-
-
-
-
-
