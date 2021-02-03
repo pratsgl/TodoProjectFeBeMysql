@@ -17,12 +17,15 @@ NAME                  TYPE                                  DATA   AGE
 db-credentials        Opaque                                2      6h30m
 db-root-credentials   Opaque                                1      6h33m
 default-token-97qmt   kubernetes.io/service-account-token   3      7h42m
-
+```
+```
 user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$ kubectl get configmaps -n default
 NAME           DATA   AGE
 backend-conf   1      5h45m
 db-conf        2      6h42m
+```
 
+```
 user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$ kubectl get pods
 NAME                                  READY   STATUS    RESTARTS   AGE
 mysql-656c77d597-82rsm                1/1     Running   0          4h50m
@@ -30,8 +33,9 @@ to-do-app-backend-5b9496bf96-4bsqp    1/1     Running   1          4h50m
 to-do-app-backend-5b9496bf96-cbfcq    1/1     Running   1          5h58m
 to-do-app-frontend-76666776fc-bcr4d   1/1     Running   1          5h44m
 to-do-app-frontend-76666776fc-tzmsq   1/1     Running   0          4h50m
+```
 
-
+```
 user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$ kubectl get pv,pvc,storageclass -n default
 NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                                STORAGECLASS   REASON   AGE
 persistentvolume/pvc-19c2b98e-7be7-4ad1-a9e7-03cb0b01fdc7   1Gi        RWO            Delete           Bound    default/mysql-pv-claim               nfs-client              6h3m
@@ -44,27 +48,29 @@ persistentvolumeclaim/mysql-pv-claim   Bound    pvc-19c2b98e-7be7-4ad1-a9e7-03cb
 NAME                                               PROVISIONER              RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
 storageclass.storage.k8s.io/nfs-client (default)   nfs-client-provisioner   Delete          Immediate           true                   6h10m
 
-
-
+```
+```
 user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$ kubectl get deployments -n default
 NAME                 READY   UP-TO-DATE   AVAILABLE   AGE
 mysql                1/1     1            1           6h4m
 to-do-app-backend    2/2     2            2           6h
 to-do-app-frontend   2/2     2            2           5h46m
-
+```
+```
 user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$ kubectl get deployments -n default
 NAME                 READY   UP-TO-DATE   AVAILABLE   AGE
 mysql                1/1     1            1           6h4m
 to-do-app-backend    2/2     2            2           6h
 to-do-app-frontend   2/2     2            2           5h46m
-
-
+```
+```
 user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$ kubectl get replicasets -n default
 NAME                            DESIRED   CURRENT   READY   AGE
 mysql-656c77d597                1         1         1       6h5m
 to-do-app-backend-5b9496bf96    2         2         2       6h1m
 to-do-app-frontend-76666776fc   2         2         2       5h48m
-
+```
+```
 user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$ kubectl describe services mysql
 Name:              mysql
 Namespace:         default
@@ -78,8 +84,8 @@ TargetPort:        3306/TCP
 Endpoints:         192.168.94.17:3306
 Session Affinity:  None
 Events:            <none>
-
-
+```
+```
 user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$ kubectl describe services to-do-app-backend
 Name:                     to-do-app-backend
 Namespace:                default
@@ -108,9 +114,8 @@ Endpoints:                192.168.94.21:8080,192.168.94.24:8080
 Session Affinity:         None
 External Traffic Policy:  Cluster
 Events:                   <none>
-
-
-
+```
+```
 user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$ kubectl get svc
 NAME                 TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
 kubernetes           ClusterIP   10.96.0.1        <none>        443/TCP        7h49m
@@ -118,7 +123,8 @@ mysql                ClusterIP   None             <none>        3306/TCP       6
 to-do-app-backend    NodePort    10.105.139.184   <none>        80:31397/TCP   6h3m
 to-do-app-frontend   NodePort    10.108.74.250    <none>        80:32181/TCP   5h49m
 
-
+```
+```
 user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$ kubectl get pods -o wide
 NAME                                  READY   STATUS    RESTARTS   AGE     IP              NODE                 NOMINATED NODE   READINESS GATES
 mysql-656c77d597-82rsm                1/1     Running   0          4h55m   192.168.94.17   kworker1.mylab.com   <none>           <none>
@@ -126,9 +132,8 @@ to-do-app-backend-5b9496bf96-4bsqp    1/1     Running   1          4h55m   192.1
 to-do-app-backend-5b9496bf96-cbfcq    1/1     Running   1          6h4m    192.168.94.20   kworker1.mylab.com   <none>           <none>
 to-do-app-frontend-76666776fc-bcr4d   1/1     Running   1          5h50m   192.168.94.24   kworker1.mylab.com   <none>           <none>
 to-do-app-frontend-76666776fc-tzmsq   1/1     Running   0          4h55m   192.168.94.21   kworker1.mylab.com   <none>           <none>
-
-
-
+```
+```
 user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$ kubectl get all
 NAME                                      READY   STATUS    RESTARTS   AGE
 pod/mysql-656c77d597-82rsm                1/1     Running   0          4h56m
@@ -154,28 +159,27 @@ replicaset.apps/to-do-app-backend-5b9496bf96    2         2         2       6h4m
 replicaset.apps/to-do-app-frontend-76666776fc   2         2         2       5h51m
 user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$ 
 
-
-
+```
+```
 user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$ kubectl get nodes -o wide
 NAME                 STATUS   ROLES    AGE     VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE                KERNEL-VERSION           CONTAINER-RUNTIME
 kmaster.mylab.com    Ready    master   7h51m   v1.18.5   172.42.42.100   <none>        CentOS Linux 7 (Core)   3.10.0-1127.el7.x86_64   docker://19.3.12
 kworker1.mylab.com   Ready    <none>   7h49m   v1.18.5   172.42.42.101   <none>        CentOS Linux 7 (Core)   3.10.0-1127.el7.x86_64   docker://19.3.12
 kworker2.mylab.com   Ready    <none>   7h46m   v1.18.5   172.42.42.102   <none>        CentOS Linux 7 (Core)   3.10.0-1127.el7.x86_64   docker://19.3.12
-
+```
+```
 user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$ kubectl get svc -o wide
 NAME                 TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE     SELECTOR
 kubernetes           ClusterIP   10.96.0.1        <none>        443/TCP        7h53m   <none>
 mysql                ClusterIP   None             <none>        3306/TCP       6h11m   app=mysql,tier=database
 to-do-app-backend    NodePort    10.105.139.184   <none>        80:31397/TCP   6h7m    app=to-do-app,tier=backend
 to-do-app-frontend   NodePort    10.108.74.250    <none>        80:32181/TCP   5h53m   app=to-do-app,tier=frontend
-
+```
 
 You can access the application using :: MasternodeIP:to-do-app-frontend-port-number 
 Example in this case  : http://172.42.42.100:32181 
 
-
-
-
+```
 user@pradeep-lab-system:~/projects/kubernetes/vagrant-provisioning$  kubectl exec -it -n default mysql-656c77d597-82rsm bash
 kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl kubectl exec [POD] -- [COMMAND] instead.
 
@@ -204,7 +208,8 @@ mysql> show databases;
 | to-do-app-db       |
 +--------------------+
 5 rows in set (0.00 sec)
-
+```
+```
 mysql> use to-do-app-db;
 Reading table information for completion of table and column names
 You can turn off this feature to get a quicker startup with -A
@@ -219,7 +224,8 @@ mysql> show tables;
 | schema_version         |
 +------------------------+
 3 rows in set (0.00 sec)
-
+```
+```
 mysql> select * from ITEM;
 +----+---------------------+---------+---------------------+-------------+---------+----------+
 | ID | CREATED_ON          | DELETED | MODIFIED_ON         | NAME        | LIST_ID | POSITION |
@@ -231,7 +237,8 @@ mysql> select * from ITEM;
 |  5 | 2020-07-13 14:37:10 |       0 | 2020-07-13 14:37:10 | Fruit Bowl  |       5 |        0 |
 +----+---------------------+---------+---------------------+-------------+---------+----------+
 5 rows in set (0.00 sec)
-
+```
+```
 mysql> select * from LIST_ENTITY;
 +----+---------------------+---------+---------------------+----------------+----------+
 | ID | CREATED_ON          | DELETED | MODIFIED_ON         | NAME           | POSITION |
@@ -245,10 +252,10 @@ mysql> select * from LIST_ENTITY;
 5 rows in set (0.00 sec)
 
 mysql>
-
+```
 
 Note : We need to pass IP address of KMASTER node : With PORT number of to-do-app-backend service
-
+```
 user@pradeep-lab-system:~/projects/terraform/ToDoApplication$ cat backend-configmap.yaml
 # ConfigMap to expose configuration related to backend application
 apiVersion: v1
